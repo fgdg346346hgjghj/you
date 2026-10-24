@@ -600,6 +600,7 @@ def run_gate(d: Path, strict: bool = False) -> dict:
     checks.append(c)
 
     checks.append(vfx_check(m, video, dur))
+    checks.append(motion_check(video))
     checks.append(author_check(m, d))
 
     # v1.6: new animation is checked on compressed pixels, not configuration flags.
@@ -655,6 +656,22 @@ def run_gate(d: Path, strict: bool = False) -> dict:
     if not fails:
         M.record_video(m["name"], fh, d)
     return rep
+
+
+def motion_check(video: Path) -> Check:
+    """2.1: lag detector. Repeated frames / freezes make a short feel laggy (fps mismatch, stills, uneven resampling)."""
+    from .. import smooth
+    c = Check("smooth_motion", 0, "No lag: repeated frames and freezes")
+    try:
+        rep = smooth.motion_report(video, max_dup=0.15, max_freeze=0.8)
+    except Exception as e:  # unreadable codec etc.: do not block on the detector itself
+        c.status = "warn"
+        c.detail = f"motion check skipped: {e}"
+        return c
+    c.data = rep["panels"]
+    for p in rep["problems"]:
+        c.fail(p)
+    return c
 
 
 def vfx_check(m: dict, video: Path, dur: float) -> Check:
