@@ -26,7 +26,7 @@ from pathlib import Path
 from .config import cache_dir
 from .util import ShortsError, log
 
-FORMAT = "bv*[height<={h}]+ba/b[height<={h}]"
+FORMAT = "bv*[height<={h}][vcodec^=avc1]+ba[ext=m4a]/bv*[height<={h}]+ba/b[height<={h}]"   # H.264 first: OpenCV cannot read AV1/VP9
 CLIENTS = [None, "web_safari", "mweb", "tv", "android_vr", "ios"]
 MEDIA_EXT = (".mp4", ".m4a", ".webm", ".mkv", ".wav", ".opus", ".mp3")
 
@@ -51,6 +51,23 @@ def brand_logo(handle: str) -> Path | None:
     except Exception as e:  # network is best-effort; the caller falls back to an honest monogram
         log.warning("brand logo for %s not fetched: %s", handle, e)
         return None
+
+
+def _ensure_h264(p: Path) -> str:
+    """Every tool in the skill reads frames through OpenCV: AV1/VP9/webm must become H.264 mp4 right after download."""
+    codec = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=codec_name", "-of", "csv=p=0", str(p)],
+                           capture_output=True, text=True).stdout.strip()
+    if codec == "h264" and p.suffix == ".mp4":
+        return str(p)
+    dst = p.with_suffix(".mp4") if p.suffix != ".mp4" else p.with_name(p.stem + "-h264.mp4")
+    r = subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(p), "-c:v", "libx264", "-preset", "veryfast", "-crf", "17", "-pix_fmt", "yuv420p",
+                        "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", str(dst)], capture_output=True, text=True)
+    if r.returncode == 0 and dst.exists():
+        if dst != p:
+            p.unlink(missing_ok=True)
+        return str(dst)
+    log.warning("H.264 transcode failed for %s: %s", p, r.stderr[-200:])
+    return str(p)
 
 
 # ------------------------------------------------------------------ yt-dlp helpers
@@ -193,6 +210,8 @@ def fetch(url: str, out_dir: Path, name: str, section: tuple[float, float] | Non
         return None
 
     path = run_ladder()
+    if path and not audio:
+        path = _ensure_h264(Path(path))
     if not path and allow_update and any(a.get("kind") in ("outdated_or_formats", "bot_block", "other") for a in attempts):
         updated = _update_ytdlp()
         attempts.append({"step": "update yt-dlp", "ok": updated})
