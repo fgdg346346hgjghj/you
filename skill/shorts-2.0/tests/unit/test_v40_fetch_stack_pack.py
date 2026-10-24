@@ -55,7 +55,7 @@ def test_ladder_continues_after_bot_block(tmp_path, monkeypatch):
     assert res["ok"] and res["path"].endswith("v.mp4")
     steps = [a["step"] for a in res["attempts"]]
     assert steps[0] == "client=default" and "client=tv" in steps
-    assert all("--download-sections" in c for c in calls)
+    assert all("--download-sections" in c for c in calls if Path(c[0]).name not in ("ffprobe", "ffmpeg"))   # 2.1: H.264 check also shells out
 
 
 def test_total_failure_gives_local_command_and_does_not_raise(tmp_path, monkeypatch):
