@@ -35,6 +35,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from .config import asset
 from .meta.tones import TONES, loudness_of, tone_name, tone_of
+from . import covers2
 from .util import ShortsError, ffprobe, hex_to_rgb, log
 from . import variants as V
 
@@ -196,7 +197,18 @@ def _check_video(p: Path) -> dict:
         errs.append(f"{p.name}: no audio track")
     if dur > 180:
         errs.append(f"{p.name}: longer than 180 s")
-    return {"errors": errs, "duration": round(dur, 2)}
+    motion = None
+    if not errs:
+        from . import smooth
+        side = p.with_suffix(".layout.json")
+        regions = None
+        if side.exists():
+            panels = json.loads(side.read_text(encoding="utf-8")).get("panels", {})
+            regions = {k: v for k, v in panels.items() if k in ("top", "main") and v} or None
+        motion = smooth.motion_report(p, regions)
+        for pr in motion["problems"]:
+            errs.append(f"{p.name}: laggy picture - {pr}")
+    return {"errors": errs, "duration": round(dur, 2), "motion": motion}
 
 
 def _title_tone(t: dict) -> str:
@@ -304,23 +316,54 @@ def pack(spec_path: Path, out_dir: Path, make_zip: bool = False) -> dict:
         folder = out_dir / f"{n:02d}-{it['slug']}"
         folder.mkdir()
         shutil.copy2(res(it["video"]), folder / f"{it['slug']}.mp4")
-        names, scores = [], []
-        for ci, c in enumerate(it["covers"], 1):
+        names, scores, images = [], [], []
+        covers = it["covers"]
+        auto = [c for c in covers if "t" not in c]
+        picks = {}
+        if auto and not it.get("legacy_cover"):
+            c0 = auto[0]
+            src0 = res(c0.get("src") or it["video"])
+            got = covers2.pick_distinct(src0, float(c0.get("t0", 0.5)), float(c0.get("t1", vi["duration"] - 0.5)), k=len(auto))
+            picks = {id(c): g for c, g in zip(auto, got)}
+        for ci, c in enumerate(covers, 1):
             src = res(c.get("src") or it["video"])
-            if "t" in c:
-                cap = cv2.VideoCapture(str(src))
-                cap.set(cv2.CAP_PROP_POS_MSEC, float(c["t"]) * 1000)
-                ok, fr = cap.read()
-                cap.release()
-                if not ok:
-                    raise ShortsError(f"cannot read frame {c['t']} s of {src}")
-                face, t, table = detect_face(_detector(), fr), float(c["t"]), []
-            else:
-                fr, t, face, table = pick_frame(src, float(c.get("t0", 0.5)), float(c.get("t1", vi["duration"] - 0.5)))
             name = "cover.png" if ci == 1 else f"cover-{ci}.png"
-            make_cover(fr, face, c["text"], folder / name, c.get("accent", "#FFD84D"), c.get("tag"))
+            if it.get("legacy_cover"):
+                if "t" in c:
+                    cap = cv2.VideoCapture(str(src))
+                    cap.set(cv2.CAP_PROP_POS_MSEC, float(c["t"]) * 1000)
+                    ok, fr = cap.read()
+                    cap.release()
+                    if not ok:
+                        raise ShortsError(f"cannot read frame {c['t']} s of {src}")
+                    face, t, table = detect_face(_detector(), fr), float(c["t"]), []
+                else:
+                    fr, t, face, table = pick_frame(src, float(c.get("t0", 0.5)), float(c.get("t1", vi["duration"] - 0.5)))
+                make_cover(fr, face, c["text"], folder / name, c.get("accent", "#FFD84D"), c.get("tag"))
+                images.append(Image.open(folder / name))
+                scores.append({"cover": name, "frame_t": round(t, 2), "face": bool(face), "table": table})
+            else:
+                if id(c) in picks:
+                    fr, t, faces, sc = picks[id(c)]
+                else:
+                    cap = cv2.VideoCapture(str(covers2.readable(src)))
+                    cap.set(cv2.CAP_PROP_POS_MSEC, float(c["t"]) * 1000)
+                    ok, fr = cap.read()
+                    cap.release()
+                    if not ok:
+                        raise ShortsError(f"cannot read frame {c['t']} s of {src}")
+                    faces, t = covers2.faces_in(covers2._detector(), fr), float(c["t"])
+                im, info = covers2.render(fr, faces, c["text"], "ABC"[min(ci - 1, 2)], c.get("accent"), c.get("tag"))
+                if info["text_on_face"]:
+                    warnings.append(f"{it['slug']}: {name}: text overlaps the face")
+                if info["upscale_soft"]:
+                    warnings.append(f"{it['slug']}: {name}: source frame is upscaled more than 2.6x, use a 1080p source")
+                im.save(folder / name)
+                images.append(im)
+                scores.append({"cover": name, "frame_t": round(t, 2), "face": bool(faces), **{k: v for k, v in info.items() if k != "text_bbox"}})
             names.append(name)
-            scores.append({"cover": name, "frame_t": round(t, 2), "face": bool(face), "table": table})
+        for w_ in covers2.distinct(images):
+            warnings.append(f"{it['slug']}: {w_}")
         (service / f"{n:02d}-{it['slug']}.json").write_text(json.dumps({"covers": scores, "video": vi}, ensure_ascii=False, indent=1), encoding="utf-8")
         txt = _card_text(it, n, names, vi["duration"])
         (folder / "НАЗВАНИЕ-И-ОПИСАНИЕ.txt").write_text(txt, encoding="utf-8")
