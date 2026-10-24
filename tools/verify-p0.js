@@ -4,7 +4,7 @@ const { chromium } = require(process.env.PW || '/tmp/k/node_modules/playwright')
   const b = await chromium.launch({ executablePath: '/usr/local/bin/google-chrome', args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
   const p = await b.newPage({ viewport: { width: 1366, height: 768 } });
   const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (['error', 'warning'].includes(m.type())) errs.push(m.text()) });
-  await p.goto('file://' + process.argv[2]); await p.waitForTimeout(3000);
+  p.setDefaultTimeout(180000); await p.goto('file://' + process.argv[2], {timeout:180000}); await p.waitForTimeout(6000);
   const r = await p.evaluate(async () => {
     const k = __krause, c = k.calc, out = {}, B = id => k.brigades.find(x => x.id === id);
     const st = (id, mode) => { const s = c.brig(B(id), mode); return `${s.sum}/${s.n}п/over${s.over}/max${s.max}/eff${Math.round(s.eff*100)}/free${s.free}` };

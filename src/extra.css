@@ -22,3 +22,17 @@ svg .alt-l{font:9px var(--mono);fill:#e2e8f0;opacity:.85}
 #viewer .nogl{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px;background:repeating-linear-gradient(135deg,#0f141c 0 14px,#121822 14px 28px);color:var(--text)}
 #viewer .nogl b{color:var(--strong);font-size:18px;margin-bottom:8px}
 #viewer .nogl p{max-width:560px;color:var(--muted)}
+/* проекторная тема и печать: светлые фоны для модулей анализа и лаборатории */
+html.kz-light .an-chip,html.kz-light .an-fig svg,html.kz-light .an-tb tfoot td,html.kz-light .an-eff4>div,html.kz-light .an-ex>td,
+html.kz-print .an-chip,html.kz-print .an-fig svg,html.kz-print .an-tb tfoot td,html.kz-print .an-eff4>div,html.kz-print .an-ex>td{background:#eef2f7}
+html.kz-light .an-in input,html.kz-light .an-lab input,html.kz-light #lab .lab-ta,html.kz-light #lab .lab-in,html.kz-light #lab select{background:#fff;color:var(--strong);border-color:var(--line)}
+html.kz-light .an-cnt,html.kz-print .an-cnt{background:#fff7e6;border-color:#d97706}
+html.kz-light .an-cnt b,html.kz-print .an-cnt b{color:#b45309}
+html.kz-light #lab .lab-stack,html.kz-print #lab .lab-stack{background:#e8edf4}
+html.kz-light #lab .lab-tbl tfoot td,html.kz-print #lab .lab-tbl tfoot td{background:#eef2f7}
+html.kz-light .an-z-green{color:#14532d;background:#dcfce7}
+html.kz-light .matrix td.ok{background:#bbf7d0;color:#14532d}
+html.kz-light .matrix td.no{background:#fecaca;color:#7f1d1d}
+html.kz-light .matrix td.na{background:#e5e7eb;color:#4b5563}
+html.kz-light #datacheck{background:#fff}
+@media print{#datacheck{display:none}}
