@@ -1776,6 +1776,9 @@
       .map((c) => `<tr><td>${c.label}, ${c.v} смин${c.needsAfter ? ` <span class="hint">(после ${c.needsAfter})</span>` : ""}</td>${ids.map((id) => cell(c, id)).join("")}</tr>`)
       .join("")}<tr><td colspan="${ids.length + 1}" class="hint">Варианты размещения — нагрузка постов после переноса, смин:</td></tr>${vr}</tbody>`;
   }
+  function krCalc() {
+    return { load: krLoad, worst: krWorst, alt: krAlt, vals: krVals, tpl: krTpl, opV: krOpV, cat: krElCat, brig: us, check: krCheck };
+  }
   // автопроверка: сумма элементов = итог в нормах = показанное значение (обе модели) + разбивки ОЭ/МД/ВО
   function krCheck() {
     let rows = [],
@@ -2180,24 +2183,53 @@
       hn = En("#viewer"),
       Fe;
     try {
+      let c = document.createElement("canvas");
+      if (!(c.getContext("webgl2") || c.getContext("webgl"))) throw new Error("no webgl");
       Fe = new Qs({ antialias: !0, powerPreference: "high-performance" });
     } catch (n) {
-      throw (
-        hn.insertAdjacentHTML(
-          "beforeend",
-          '<p style="padding:20px">WebGL недоступен в этом браузере — таблицы и графики ниже работают без него.</p>',
-        ),
-        zh(vt, {
-          setMode: () => {},
-          setSel: () => {},
-          focus: () => {},
-          mark: () => {},
-          highlight: () => {},
-          unhighlight: () => {},
-        }),
-        Wi(vt),
-        n
+      // без WebGL: заглушка вместо 3D, остальная страница и API данных работают
+      hn.insertAdjacentHTML(
+        "beforeend",
+        '<div class="nogl"><b>3D недоступно в этом браузере</b><p>Браузер не дал WebGL (выключено аппаратное ускорение или старая видеокарта). Все таблицы, графики и расчёты ниже работают без него. Для 3D откройте файл в Chrome, Edge или Яндекс.Браузере с включённым аппаратным ускорением.</p></div>',
       );
+      let st = {
+        setMode: (m) => {
+          ki[m] &&
+            ((vt.mode = m),
+            (document.body.dataset.mode = m),
+            document.querySelectorAll("button[data-mode]").forEach((b) => b.setAttribute("aria-pressed", b.dataset.mode === m)),
+            Wi(vt));
+        },
+        setSel: (id) => {
+          Ce[id] && ((vt.sel = id), (vt.playT = 0), Wi(vt));
+        },
+        focus: () => {},
+        mark: () => {},
+        zoom: () => {},
+        highlight: () => {},
+        unhighlight: () => {},
+        setData: (p = {}) => {
+          (Object.assign(KRX, p), krApply(), Wi(vt), La(), krSyncUi());
+          document.dispatchEvent(new CustomEvent("krause:data", { detail: { ...KRX } }));
+        },
+      };
+      (document.body.classList.add("no-webgl"), zh(vt, st), Wi(vt), krSyncUi());
+      document.querySelectorAll("button[data-mode]").forEach((b) => b.addEventListener("click", () => st.setMode(b.dataset.mode)));
+      window.__krause = {
+        noWebGL: !0,
+        kd: KRD,
+        kx: KRX,
+        setData: st.setData,
+        dataSig: () => `${KRX.src}|${KRX.model}|${KRX.mix}|${KRX.recog}`,
+        calc: krCalc(),
+        state: vt,
+        setMode: st.setMode,
+        setSel: st.setSel,
+        load: fe,
+        brigades: Re,
+      };
+      console.info("[krause] WebGL недоступен — 3D отключено, расчёты и графики работают");
+      return;
     }
     Fe.setPixelRatio(Math.min(devicePixelRatio, 1.5));
     Fe.shadowMap.enabled = !0;
@@ -3352,7 +3384,7 @@
       kx: KRX,
       setData: krSetData,
       dataSig: () => `${KRX.src}|${KRX.model}|${KRX.mix}|${KRX.recog}`,
-      calc: { load: krLoad, worst: krWorst, alt: krAlt, vals: krVals, tpl: krTpl, opV: krOpV, cat: krElCat, brig: us, check: krCheck },
+      calc: krCalc(),
       dbg: () => ({ tw: Qr.length, running: ro, calls: Fe.info.render.calls, tris: Fe.info.render.triangles }),
       view: (n, t) => {
         (we.position.set(...n), Je.target.set(...t), Je.update(), De());

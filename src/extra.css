@@ -19,3 +19,6 @@ svg .alt-l{font:9px var(--mono);fill:#e2e8f0;opacity:.85}
 .matrix td.na{background:#1f2937;color:#6b7280;text-align:center}
 #steps .tag{white-space:normal}
 .kpi .kpi-now em{font-style:normal;color:var(--text);font-weight:600}
+#viewer .nogl{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:32px;background:repeating-linear-gradient(135deg,#0f141c 0 14px,#121822 14px 28px);color:var(--text)}
+#viewer .nogl b{color:var(--strong);font-size:18px;margin-bottom:8px}
+#viewer .nogl p{max-width:560px;color:var(--muted)}
