@@ -269,11 +269,28 @@ def measure(path: Path | str) -> dict:
     return {"lufs": f(i), "true_peak": f(tp), "sample_peak": f(pk), "clipped": int(clip[-1]) if clip else None}
 
 
+def _load_any(path, start: float, duration: float | None):
+    """librosa/soundfile cannot open webm/m4a/mp4 (yt-dlp output): decode through ffmpeg to mono 22.05 kHz float."""
+    import subprocess
+
+    import librosa
+
+    try:
+        if str(path).lower().endswith((".wav", ".flac", ".ogg", ".mp3")):
+            return librosa.load(str(path), sr=22050, mono=True, offset=start, duration=duration)
+    except Exception:
+        pass
+    cmd = ["ffmpeg", "-v", "error", "-ss", f"{start:.3f}"] + (["-t", f"{duration:.3f}"] if duration else []) + \
+          ["-i", str(path), "-vn", "-ac", "1", "-ar", "22050", "-f", "f32le", "-"]
+    raw = subprocess.run(cmd, capture_output=True).stdout
+    return np.frombuffer(raw, np.float32).copy(), 22050
+
+
 def beats(path: Path | str, start: float = 0.0, duration: float | None = None) -> dict:
     """Beat grid and strong beats (librosa). Strong = top 40% onset strength; downbeat phase picked by energy."""
     import librosa
 
-    y, sr = librosa.load(str(path), sr=22050, mono=True, offset=start, duration=duration)
+    y, sr = _load_any(path, start, duration)
     if len(y) < sr:
         raise ShortsError("music too short for beat analysis")
     onset = librosa.onset.onset_strength(y=y, sr=sr)
