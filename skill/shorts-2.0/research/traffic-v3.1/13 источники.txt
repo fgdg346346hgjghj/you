@@ -1,0 +1,160 @@
+ИСТОЧНИКИ
+СВЕРКА v3.2: актуальные проверки правил и их ограничения - файл 22, раздел 9.
+Точную дату поста об оригинальности 01.10.2026 не удалось подтвердить. Различай
+монетизацию и рекомендации; >=2 авторских слоёв - контракт скилла [Г], не число
+из правила площадки. Частный замер двух загрузок [Н] не доказывает причинный закон.
+Всё, что изучено для этой папки. Реальные ролики разобраны покадрово (кадры и расшифровки),
+факты о правилах площадок взяты из официальных справок. Сторонние цифры помечены в файлах как
+оценки.
+
+====================================================================
+1. УРОКИ ПО ЭДИТАМ (полные расшифровки изучены)
+====================================================================
+ - Tifofey, урок по эдитам (646 тыс. просмотров): https://www.youtube.com/watch?v=wwMeX-qDfoA
+ - YoEdit, урок по эдитам (415 тыс.): https://www.youtube.com/watch?v=tjmbz1k9wsU
+ Использовано в: 01, 03, 05.
+
+====================================================================
+2. РАЗОБРАННЫЕ SHORTS (кадры + звук + текст)
+====================================================================
+ - PRIORITET, Тачки 3, ч/б, Sufjan Stevens "Fourth of July": https://www.youtube.com/shorts/JZ0XBUEJAiQ
+ - Близость Успеха, Знакомьтесь, Джо Блэк, Sting "Shape of My Heart": https://www.youtube.com/shorts/K4EUomaqu8s
+ - kinobust, Джокер, плашка "ЦЕНА ПРИЗНАНИЯ": https://www.youtube.com/shorts/raMncFZdzKY
+ - xcel, глоу-ап, Stromae "Alors on danse" slowed: https://www.youtube.com/shorts/2CiFkmHUsg8
+ - Starikov Crypto, Симпсоны, предсказания (51 с): https://www.youtube.com/shorts/lKtLW4jMOoE
+ - prof_ilms, Царство небесное, кинетическая типографика: https://www.youtube.com/shorts/EgWKQCer6D8
+ - Скрин пользователя: Alex Maisak "Я сделал 1250 $ за 7 Дней на Нарезках" (103 тыс.) - файлы 06, 12.
+ Использовано в: 01-06, 09, 10, 12.
+
+====================================================================
+3. ПОИСК ЗВУКОВ НА YOUTUBE
+====================================================================
+ Запросы: "edit audio", "phonk edit audio", "sad edit audio slowed",
+ "edit audios that make you feel powerful", "cinematic edit music epic" (просмотры сравнивались).
+ TikTok Creative Center -> Trends -> Songs: https://ads.tiktok.com/business/creativecenter/
+ Sprout Social, как искать трендовые звуки TikTok:
+  https://sproutsocial.com/insights/how-to-find-trending-sounds-on-tiktok/
+ CapCut velocity edit (кривые скорости и бит): https://capcutguide.com/capcut-velocity-edit/
+ Использовано в: 01, 05.
+
+====================================================================
+4. ОФИЦИАЛЬНЫЕ СПРАВКИ YOUTUBE
+====================================================================
+ - Хэштеги (до 3 над названием, >60 = все игнорируются): https://support.google.com/youtube/answer/6390658
+ - Обложки (в т.ч. Shorts 9:16, авто 4:5 на главной): https://support.google.com/youtube/answer/72431
+ - Test & Compare (до 3 вариантов, победа по watch time): https://support.google.com/youtube/answer/16391400
+ - Конечные заставки (5-20 с): https://support.google.com/youtube/answer/6388789
+ - Изменение подсчёта просмотров Shorts с 31.03.2025 (engaged views):
+   https://support.google.com/youtube/thread/333869549/a-change-to-how-we-count-views-on-shorts?hl=en
+ - Правила о спаме и вводящих в заблуждение метаданных: https://support.google.com/youtube/answer/2801973
+ Использовано в: 06, 07, 08, 10, 11, 12.
+
+====================================================================
+5. TIKTOK
+====================================================================
+ - Как TikTok рекомендует контент (взаимодействия, информация о видео, о пользователе):
+   https://support.tiktok.com/en/using-tiktok/exploring-videos/how-tiktok-recommends-content
+   https://newsroom.tiktok.com/en-us/how-tiktok-recommends-videos-for-you
+ Использовано в: 07, 08, 10, 11.
+
+====================================================================
+6. СТРАТЕГИЯ И ПСИХОЛОГИЯ
+====================================================================
+ - MrBeast, внутренний документ "How to succeed in MrBeast production" (название и обложка
+   сначала, пример с кетчупом, первая минута): https://simonwillison.net/2024/Sep/15/how-to-succeed-in-mrbeast-production
+ - Paddy Galloway, исследование 3.3 млрд просмотров / 5400 Shorts:
+   https://x.com/PaddyG96/status/1646898356419981315
+   пересказ: https://medium.com/@antoinelacombled/cracking-the-youtube-shorts-algorithm-a-study-of-3-3-billion-views-4711fdf7931b
+   (тред 14.04.2023, 33 канала; данные до смены подсчёта; о "3-5 вариантах первого кадра" в
+   треде ничего нет - это наша практика [Г], файл 10, раздел 10)
+ - Loewenstein G. (1994) "The Psychology of Curiosity" (информационный разрыв):
+   https://www.cmu.edu/dietrich/sds/docs/loewenstein/PsychofCuriosity.pdf
+ - Правило "но/поэтому" (Trey Parker и Matt Stone, South Park) - известный приём сценаристов.
+ Использовано в: 06, 07, 09, 10, 12.
+
+====================================================================
+7. СКИЛЛ shorts (версия 1.2.0)
+====================================================================
+ SKILL.md, ROUTER.md, reference/*.md (в т.ч. edits-film.md, layout.md, qa.md, growth-loop.md),
+ schema/plan.schema.json, engine/velocity.py. Параметры и команды из него используются во всех
+ файлах, чтобы рекомендации сразу переводились в поля плана.
+
+====================================================================
+8. ЧТО ПРОВЕРЯТЬ ЗАНОВО
+====================================================================
+ Правила площадок меняются. Раз в 3-6 месяцев перепроверяй справки из разделов 4-5 и тренды звуков
+ (раздел 3: тренд звука живёт от нескольких дней до 2-3 недель).
+ Срок годности каждого факта и где перепроверять - файл 22, раздел 6.
+
+====================================================================
+9. ДОПОЛНЕНИЕ: ИСТОЧНИКИ ФАЙЛОВ 14-19
+====================================================================
+ Ролики-примеры (YouTube, ID: https://www.youtube.com/watch?v=ID или /shorts/ID):
+  - ZtLrNBdXT7M  Dope Gameplays "BEST GTA 5 MEGA RAMP No Copyright Gameplay ... 4K 60fps" (17, 18)
+  - 5rsd34XKKkM, M2j1SPMQwtI, c3Db9IMwGNM (CC BY 4.0) - фоновый геймплей (17)
+  - Jjt1fVYBkmQ  @amazinglul, Minecraft + карточка поста, 4.9 млн (14, 15, 17)
+  - -3Z3ER0rgDE  @StanleyMOVLive, реакция сверху, видео снизу (15, 17)
+  - bM4eLmbG4a8, pyF9ruuXRmk  @kinomir437 "ТГК в шапке профиля" (17, 18)
+  - HcskifhM6sI  @realforgedman, список + иконка Telegram (15, 18)
+  - tW0pmWtcOv0  @martinesyoutube "Сколько можно заработать на Ютуб Шортс...", 8.1 млн (15, 18)
+  - h953lwFft7A  filzanuty "The BEST Editing Pack Leak for 2025!" (18, 19)
+  - ytoA1OMalLk  "ЛУЧШИЙ ПАК ДЛЯ МОНТАЖЕРА В 2026 ГОДУ" (19)
+  - 75o2_ciM0Bk  "Best 21 Websites For Free Video Editing Assets" (19)
+  - _6leje1uDL4, RkKHnw-BYR4, MFO35Xp_ld8 - инструменты и ресурсы монтажёра (19)
+  - 8JGoOBZz38U  виды склеек, 1.1 млн (16)
+  - 87cynGnmnGg, kdlQ502d4Qk, 80jd8KJiYNY - flicker / flash blur (14, 16)
+  - CHLRELKJOEc  letterbox в CapCut (14, 16); CgqmyCEnpmY до/после цвет (14, 16)
+  - jaJPGeqTDJ8  split screen (14)
+ Справки и блог YouTube:
+  - Related video, гайд (14.07.2026): http://blog.youtube/creator-and-artist-stories/youtube-related-videos-traffic-guide
+  - Монетизация и переиспользованный контент: https://support.google.com/youtube/answer/1311392
+  - FAQ сообщества о reused content: https://support.google.com/youtube/community-guide/271248162
+  - Политика внешних ссылок: https://support.google.com/youtube/answer/9054257
+  - Спам и увод с платформы: https://support.google.com/youtube/answer/2801973
+  - Ссылки брендов в Shorts: https://support.google.com/youtube/answer/16722303 , /answer/17081657
+ TikTok:
+  - Ссылки в профиле: https://support.tiktok.com/en/using-tiktok/creating-videos/linking-another-social-media-account
+ Исследования и статьи:
+  - Sludge content: https://en.wikipedia.org/wiki/Sludge_content
+  - Исследование 2026 (sludge и внимание): https://pmc.ncbi.nlm.nih.gov/articles/PMC12999531/
+    (doi 10.1177/09727531261424994)
+  - Cognitive Research 2026: https://link.springer.com/article/10.1186/s41235-026-00720-2
+  - Washington Post 30.03.2024 о замедлении монтажа MrBeast.
+  - Блокировка Telegram в России (2026): https://ru.wikipedia.org/wiki/Блокировка_Telegram_в_России_(2026)
+ Ресурсы (каталог в файле 19): pixabay.com, pexels.com, mixkit.co, videvo.net, freepik.com,
+  vecteezy.com, freesound.org, myinstants.com, filmcrux.com, playphrase.me, getyarn.io,
+  greenscreenmemes.com, creatorset.com, ineedeffects.com, texturelabs.org, videezy.com,
+  fonts.google.com, fontsquirrel.com, podcast.adobe.com, jitter.video, opus.pro,
+  trends.google.com (gprop=youtube), vidiq.com, ads.tiktok.com/business/creativecenter,
+  socialblade.com, knowyourmeme.com, archive.org, commons.wikimedia.org, github.com/yt-dlp/yt-dlp,
+  github.com/SYSTRAN/faster-whisper.
+ Использовано в: 14-19.
+
+====================================================================
+10. ДОПОЛНЕНИЕ V2 (ПРОВЕРЕНО 2026-10-12): ФАЙЛЫ 21-22
+====================================================================
+ YouTube (21, 22):
+  - Shorts до 3 мин: https://support.google.com/youtube/answer/15424877
+  - Музыка в Shorts (до 90 с): https://support.google.com/youtube/answer/13486873
+  - YPP, пороги: https://support.google.com/youtube/answer/72851
+  - Метка ИИ: https://support.google.com/youtube/answer/14328491
+  - Метрики Shorts (viewed vs swiped): https://support.google.com/youtube/answer/12942217
+  - Оригинальность Shorts (01.10.2026):
+    https://support.google.com/youtube/thread/470890423/prioritizing-original-content-on-shorts
+ Instagram:
+  - 2024: https://creators.instagram.com/blog/recommendations-and-originality
+  - 2026: https://creators.instagram.com/blog/rewarding-original-creators-on-instagram
+  - Trial Reels: http://creators.instagram.com/blog/instagram-trial-reels
+ TikTok: https://www.tiktok.com/community-guidelines/en/integrity-authenticity (13.09.2025)
+ Данные (21):
+  - Galloway, архив треда: https://en.rattibha.com/storage/pdf/469770_1.pdf
+  - Cutting et al. 2011: https://pmc.ncbi.nlm.nih.gov/articles/PMC3485803
+  - MrBeast, 03.03.2024: https://twitter.com/MrBeast/status/1764293361437909406
+ Фактчек "Симпсонов" (09, раздел 5):
+  - Reuters: https://www.reuters.com/article/world/partly-false-claim-a-1993-simpsons-episode-predicted-the-new-coronavirus-outbre-idUSKBN21112Q/
+  - Poynter (FALSE), AFP (отредактированные кадры).
+ Поправки к старым источникам:
+  - Galloway (раздел 6): данные 2023, до смены подсчёта; "3-5 вариантов кадра 0" - не из треда.
+  - MrBeast (раздел 6): документ и пост - про длинные видео; к Shorts переносить как [О].
+  - Telegram (раздел 9): ru.wikipedia - вторичный источник; статус перепроверять (файл 22).
+  - Кейс "1250 $" (файлы 02, 12): сумма не подтверждена; это пример упаковки, не доказательство.
