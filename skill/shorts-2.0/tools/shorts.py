@@ -590,6 +590,62 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     s.set_defaults(fn=pack_cmd)
 
+    s = sub.add_parser("srt", help="2.1: YouTube subtitles of a section -> word-timed SRT (0 = section start)")
+    s.add_argument("url"); s.add_argument("--start", type=float, required=True); s.add_argument("--end", type=float, required=True)
+    s.add_argument("--out", required=True); s.add_argument("--lang", default="ru")
+    def srt_cmd(a):
+        from shortskit.subs import youtube_srt
+        _print(youtube_srt(a.url, a.start, a.end, Path(a.out), a.lang))
+        return 0
+    s.set_defaults(fn=srt_cmd)
+
+    s = sub.add_parser("motion", help="2.1: lag check of a finished video: repeated frames and freezes per panel (exit 1 = laggy)")
+    s.add_argument("video")
+    def motion_cmd(a):
+        import json as _j
+        from shortskit import smooth
+        v = Path(a.video)
+        side = v.with_suffix(".layout.json")
+        regions = None
+        if side.exists():
+            panels = _j.loads(side.read_text(encoding="utf-8")).get("panels", {})
+            regions = {k: p for k, p in panels.items() if k in ("top", "main") and p} or None
+        rep = smooth.motion_report(v, regions)
+        _print(rep)
+        return 0 if rep["ok"] else 1
+    s.set_defaults(fn=motion_cmd)
+
+    s = sub.add_parser("adbar", help="2.1: preview PNG of the bottom ad bar (reference layout, QR, logo) from a JSON spec")
+    s.add_argument("spec"); s.add_argument("--out", default="adbar-preview.png"); s.add_argument("--t", type=float, default=1.5)
+    def adbar_cmd(a):
+        from shortskit import adbar
+        spec = read_json(a.spec)
+        spec = spec.get("adbar", spec)
+        p = adbar.preview(spec, Path(a.out), Path(a.spec).resolve().parent, a.t)
+        b = adbar.AdBar(spec, Path(a.spec).resolve().parent)
+        ok = adbar.qr_decodes(b.frame(a.t), spec["url"])
+        _print({"preview": str(p), "qr_decodes": ok})
+        return 0 if ok else 1
+    s.set_defaults(fn=adbar_cmd)
+
+    s = sub.add_parser("covers", help="2.1: three different covers (close / context / poster) from a video: covers VIDEO --text A --text B --text C")
+    s.add_argument("video"); s.add_argument("--text", action="append", required=True, help="2-4 words, *word* = accent; repeat 3 times")
+    s.add_argument("--t0", type=float, default=0.5); s.add_argument("--t1", type=float); s.add_argument("--tag"); s.add_argument("--out", default="covers")
+    def covers_cmd(a):
+        from shortskit import covers2
+        from shortskit.smooth import probe
+        t1 = a.t1 or max(probe(a.video)["duration"] - 0.5, a.t0 + 1)
+        picks = covers2.pick_distinct(a.video, a.t0, t1, k=len(a.text))
+        out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
+        imgs, rep = [], []
+        for i, ((fr, t, faces, sc), txt) in enumerate(zip(picks, a.text)):
+            im, info = covers2.render(fr, faces, txt, "ABC"[min(i, 2)], None, a.tag if i == 0 else None)
+            f = out / ("cover.png" if i == 0 else f"cover-{i + 1}.png"); im.save(f); imgs.append(im)
+            rep.append({"file": str(f), "t": round(t, 2), **{k: v for k, v in info.items() if k != "text_bbox"}})
+        _print({"covers": rep, "problems": covers2.distinct(imgs)})
+        return 0
+    s.set_defaults(fn=covers_cmd)
+
     s = sub.add_parser("anim-init", help="animation episode skeleton: episodes/NAME/ with script, shotlist, brief, words stub; never overwrites")
     s.add_argument("name"); s.add_argument("--root", default=".", help="studio folder that holds episodes/ (default: current)")
     def anim_init(a):
