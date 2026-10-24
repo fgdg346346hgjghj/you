@@ -311,9 +311,12 @@ def analyse_clip(path: Path) -> dict:
             "face_x": fx, "faces": fn, "motion": motion, "dark": dark, "w": info["w"], "h": info["h"], "_faces": raws}
 
 
-def best_offset(an: dict, span: float, tau: float, prefer: float | None = None) -> tuple[float, float]:
+def best_offset(an: dict, span: float, tau: float, prefer: float | None = None,
+                avoid: list | None = None) -> tuple[float, float]:
     """Start offset in the clip for a shot that needs `span` source seconds with its hang at `tau`:
-    inside one camera shot, the hang on the biggest face. Returns (offset, quality 0..1)."""
+    inside one camera shot, the hang on the biggest face. Returns (offset, quality 0..1).
+    `avoid` = [(offset, span)] windows of this clip already used: a repeated shot must come from a different window
+    (no free window: returns (None, -1.0))."""
     t = np.array(an["t"])
     fh = np.array(an["face_h"])
     mo = np.array(an["motion"])
@@ -323,6 +326,8 @@ def best_offset(an: dict, span: float, tau: float, prefer: float | None = None) 
         if b - a < span + 0.08:
             continue
         for o in np.arange(a + 0.04, b - span - 0.04 + 1e-6, 0.1):
+            if avoid and any(o < uo + us + 0.15 and uo < o + span + 0.15 for uo, us in avoid):
+                continue
             hang = o + tau * span
             inside = (t >= o) & (t <= o + span)
             if not inside.any():
@@ -337,6 +342,8 @@ def best_offset(an: dict, span: float, tau: float, prefer: float | None = None) 
                 q -= 0.02 * abs(hang - prefer)
             if q > best[1]:
                 best = (float(o), q)
+    if best[0] is None and avoid:
+        return None, -1.0
     if best[0] is None:  # no camera shot long enough: the longest one, the curve gets slower (fit in render)
 
         def lit(seg):  # share of non-black samples in a camera shot
@@ -648,11 +655,24 @@ def edit_plan(video: str, out_dir: Path, line: str | None = None, line_at: tuple
     for k, i in zip(rest_slots, ranked):
         o, q = quality(i, k)
         chosen[k] = (i, o, q)
-    for k in rest_slots:  # not enough candidates: reuse the best ones from another offset
-        if k not in chosen:
+    used: dict[int, list] = {}
+    for k, (i, o, _q) in chosen.items():
+        used.setdefault(i, []).append((o, spans[k][2]))
+    for k in rest_slots:  # not enough candidates: reuse clips, but never the same moment twice
+        if k in chosen:
+            continue
+        best = None
+        for i in range(len(an)):
+            o, q = best_offset(an[i], spans[k][2], spans[k][3], prefer=an[i]["thumb"]["t"] - an[i]["film_t0"], avoid=used.get(i))
+            if o is not None and (best is None or q > best[2]):
+                best = (i, o, q)
+        if best is None:
+            log.warning("slot %d: no unused moment left, a shot repeats", k)
             i = max(range(len(an)), key=lambda i: quality(i, k)[1])
             o, q = quality(i, k)
-            chosen[k] = (i, max(0.0, o - 0.6), q)
+            best = (i, max(0.0, o - 0.6), q)
+        chosen[k] = best
+        used.setdefault(best[0], []).append((best[1], spans[k][2]))
     # 6) scenes
     look_d = {"grade": look}
     scenes = [{
