@@ -1,0 +1,21 @@
+
+/* v2: постоянный итог, переключатели данных, пунктир другого источника, автопроверка */
+.kpi .kpi-h,.kpi .kpi-now{grid-column:1/-1;background:var(--card);padding:8px 16px;font-size:13px;color:var(--muted)}
+.kpi .kpi-h{color:var(--strong);font-weight:600}
+.kpi .kpi-now b{color:var(--text)}
+.datasw{margin:10px 0 0;gap:10px;flex-wrap:wrap}
+.datasw .mixl{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);padding:0 6px}
+.datasw .mixl[hidden]{display:none}
+.datasw .mixl input{width:110px;accent-color:#a78bfa}
+.datasw .mixl output{font-family:var(--mono);color:var(--text);min-width:3.5em}
+.datanote{margin:6px 0 0}
+svg .alt-l{font:9px var(--mono);fill:#e2e8f0;opacity:.85}
+#datacheck{position:fixed;left:12px;bottom:12px;z-index:50;font:12px/1 var(--mono);padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);cursor:help}
+#datacheck.good{color:var(--good);border-color:#166534}
+#datacheck.bad{color:var(--bad);border-color:#7f1d1d}
+.steps-note,.tag.note{--c:#64748b}
+.matrix td.ok{background:#14532d;color:#bbf7d0;text-align:center}
+.matrix td.no{background:#450a0a;color:#fecaca;text-align:center}
+.matrix td.na{background:#1f2937;color:#6b7280;text-align:center}
+#steps .tag{white-space:normal}
+.kpi .kpi-now em{font-style:normal;color:var(--text);font-weight:600}
