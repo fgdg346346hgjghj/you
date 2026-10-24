@@ -117,3 +117,19 @@ def test_mask_profanity_masks_mat_and_keeps_normal_words():
 def test_vtt_words_drops_bleep_and_sound_tags():
     from shortskit.subs import _keep_word
     assert [w for w in ["се", "[", "__", "]", "[Музыка]", ">>", "♪", "выступал"] if _keep_word(w)] == ["се", "выступал"]
+
+
+def test_best_offset_avoid_gives_a_different_window():
+    from shortskit.adapters.edit2 import best_offset
+    t = [i / 8 for i in range(40)]
+    an = {"t": t, "face_h": [0.4] * 40, "motion": [6.0] * 40, "segments": [(0.0, 5.0)], "dark": [False] * 40}
+    o1, _ = best_offset(an, 0.75, 0.5)
+    o2, q2 = best_offset(an, 0.75, 0.5, avoid=[(o1, 0.75)])
+    assert o2 is not None and abs(o2 - o1) >= 0.75
+    taken, _q = [], None
+    for _ in range(10):
+        o, q = best_offset(an, 0.75, 0.5, avoid=taken)
+        if o is None:
+            break
+        taken.append((o, 0.75))
+    assert 3 <= len(taken) <= 6 and q == -1.0
